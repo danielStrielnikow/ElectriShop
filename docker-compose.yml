@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Backend - Spring Boot
+  backend:
+    container_name: Electi_back
+    build: ./e-commerce-back
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USER=${SPRING_DATASOURCE_USER}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_COOKIE=${JWT_COOKIE}
+      - STRIPE_API_KEY=${STRIPE_API_KEY}
+      - FRONT_URL=${FRONT_URL}
+      - SECURITY_NAME=${SECURITY_NAME}
+      - SECURITY_PASSWORD=${SECURITY_PASSWORD}
+      - BASE_URL_IMAGES=${BASE_URL_IMAGES}
+    ports:
+      - "8080:8080"  # Mapowanie portu na localhost
+    depends_on:
+      - electi_db
+    networks:
+      - electi_network
+
+  # Frontend - React
+  frontend:
+    container_name: Electi_front
+    build: ./e-commerce-front
+    ports:
+      - "5173:5173"  # Port na którym frontend będzie dostępny
+    environment:
+      VITE_BACK_END_URL: ${VITE_BACK_END_URL}
+      VITE_STRIPE_PUBLISHABLE_KEY: ${VITE_STRIPE_PUBLISHABLE_KEY}
+    networks:
+      - electi_network
+
+  # PostgreSQL
+  electi_db:
+    container_name: Electi_db
+    image: postgres:16
+    environment:
+      POSTGRES_USER: daniel
+      POSTGRES_PASSWORD: daniel
+      POSTGRES_DB: ecommerce
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - electi_network
+
+networks:
+  electi_network:
+    driver: bridge  
+    name: electi_network
+
+volumes:
+  postgres-data:
+    driver: local
+
+
