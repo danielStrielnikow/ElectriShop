@@ -34,7 +34,6 @@
   * [✅ Wymagania](#-wymagania)
   * [🔧 Instalacja](#-instalacja)
   * [▶️ Uruchomienie](#️-uruchomienie)
-  * [🧪 Testowanie](#-testowanie)
 * [🔐 Plik .env](#-plik-env)
 * [📡 Przykładowe API](#-przykładowe-api)
 * [🤝 Współpraca](#-współpraca)
