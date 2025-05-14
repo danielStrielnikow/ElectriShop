@@ -34,15 +34,10 @@
 
 - [🔍 Opis projektu](#-opis-projektu)
 - [🚀 Funkcje](#-funkcje)
-- [📁 Struktura projektu](#-struktura-projektu)
 - [🧰 Jak uruchomić](#-jak-uruchomić)
   - [⚙️ Wymagania](#️-wymagania)
   - [📦 Instalacja](#-instalacja)
   - [▶️ Uruchomienie](#️-uruchomienie)
-  - [🧪 Testowanie](#-testowanie)
-- [🧼 Jakość kodu](#-jakość-kodu)
-- [📸 Zrzuty ekranu](#-zrzuty-ekranu)
-- [📄 Licencja](#-licencja)
 
 ---
 
