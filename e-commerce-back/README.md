@@ -89,7 +89,7 @@ mvn clean install
 3. (Opcjonalnie) Zbuduj obraz Dockera:
 
 ```bash
-docker build -t electiback .
+docker build -t electriShop .
 ```
 
 ---
