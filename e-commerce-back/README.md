@@ -76,7 +76,7 @@ Aby uruchomić projekt, potrzebujesz:
 1. Sklonuj repozytorium:
 
 ```bash
-git clone https://github.com/danielStrielnikow/ElectiBack
+git clone https://github.com/danielStrielnikow/ElectriShop
 cd ElectriShop
 ```
 
