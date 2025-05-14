@@ -203,6 +203,8 @@ Odpowiedź:
 
 `GET /api/public/products`
 
+Odpowiedź:
+
 ```json
 {
     "content": [
@@ -228,6 +230,7 @@ Odpowiedź:
 ### 📦 Lista kategorii
 `GET /api/public/categories`
 
+Odpowiedź:
 
 ```json
 {
