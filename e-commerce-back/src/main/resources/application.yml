@@ -13,9 +13,9 @@ spring:
     jwtExpirationMs: 3600000
     jwtCookieName: ${JWT_COOKIE}
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USER}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -40,9 +40,12 @@ project:
 frontend:
   url: ${FRONT_URL}
 
-image:
-  base:
-    url: ${BASE_URL_IMAGES}
+cloudinary:
+  cloud-name: ${CLOUD_NAME_CLOUDINARY}
+  api-key: ${API_KEY_CLOUDINARY}
+  api-secret: ${API_SECRET_CLOUDINARY}
+  url: cloudinary://${API_KEY_CLOUDINARY}:${API_SECRET_CLOUDINARY}@${CLOUD_NAME_CLOUDINARY}
+
 #Stripe key
 stripe:
   secret:

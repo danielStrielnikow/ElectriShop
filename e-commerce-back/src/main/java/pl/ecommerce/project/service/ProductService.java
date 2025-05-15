@@ -36,6 +36,7 @@ public class ProductService {
     private final CartRepository cartRepository;
     private final CartService cartService;
     private final DTOMapper dtoMapper;
+    private final CloudinaryService cloudinaryService;
 
     @Value("${project.image}")
     private String imagePath;
@@ -51,13 +52,14 @@ public class ProductService {
                           FileServiceImpl fileService,
                           CartRepository cartRepository,
                           CartService cartService,
-                          DTOMapper dtoMapper) {
+                          DTOMapper dtoMapper, CloudinaryService cloudinaryService) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.fileService = fileService;
         this.cartRepository = cartRepository;
         this.cartService = cartService;
         this.dtoMapper = dtoMapper;
+        this.cloudinaryService = cloudinaryService;
     }
 
     public ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy,
@@ -93,7 +95,7 @@ public class ProductService {
         return mapToProductResponse(productPage);
     }
 
-    public ProductDTO addProduct(Long categoryId, ProductDTO productDTO) {
+    public ProductDTO addProduct(Long categoryId, ProductDTO productDTO) throws IOException {
         Category category = fetchCategoryById(categoryId);
 
         boolean productExists = category.getProducts().stream()
@@ -102,10 +104,13 @@ public class ProductService {
 
         Product product = dtoMapper.mapProductToEntity(productDTO);
 
-        if (productDTO.getImage() == null || productDTO.getImage().isEmpty()) {
-            product.setImage(defaultImage);
+        //Upload Images
+        if (productDTO.getImageFile() != null && !productDTO.getImageFile().isEmpty()) {
+            validateImageFile(productDTO.getImageFile());
+            String imageUrl = cloudinaryService.uploadImage(productDTO.getImageFile());
+            product.setImage(imageUrl);
         } else {
-            product.setImage(productDTO.getImage());
+            product.setImage(defaultImage);
         }
 
         product.setCategory(category);
@@ -224,7 +229,7 @@ public class ProductService {
     }
 
     private void validateImageFile(MultipartFile image) {
-        if (image.isEmpty() || !image.getContentType().startsWith("image/")) {
+        if (image == null || image.isEmpty() || !image.getContentType().startsWith("image/")) {
             throw new APIException("Invalid image file");
         }
     }
