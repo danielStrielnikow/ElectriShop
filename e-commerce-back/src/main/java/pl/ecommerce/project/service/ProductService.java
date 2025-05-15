@@ -38,13 +38,13 @@ public class ProductService {
     private final DTOMapper dtoMapper;
     private final CloudinaryService cloudinaryService;
 
-    @Value("${project.image}")
+    @Value("${cloudinary.path}")
     private String imagePath;
 
-    @Value("${image.base.url}")
+    @Value("${cloudinary.url}")
     private String imageBaseUrl;
 
-    @Value("${project.default}")
+    @Value("${cloudinary.default_image}")
     private String defaultImage;
 
     public ProductService(ProductRepository productRepository,
@@ -95,7 +95,7 @@ public class ProductService {
         return mapToProductResponse(productPage);
     }
 
-    public ProductDTO addProduct(Long categoryId, ProductDTO productDTO) throws IOException {
+    public ProductDTO addProduct(Long categoryId, ProductDTO productDTO) {
         Category category = fetchCategoryById(categoryId);
 
         boolean productExists = category.getProducts().stream()
@@ -103,16 +103,7 @@ public class ProductService {
         if (productExists) throw new APIException(AppErrors.ERROR_PRODUCT_EXISTS);
 
         Product product = dtoMapper.mapProductToEntity(productDTO);
-
-        //Upload Images
-        if (productDTO.getImageFile() != null && !productDTO.getImageFile().isEmpty()) {
-            validateImageFile(productDTO.getImageFile());
-            String imageUrl = cloudinaryService.uploadImage(productDTO.getImageFile());
-            product.setImage(imageUrl);
-        } else {
-            product.setImage(defaultImage);
-        }
-
+        product.setImage(productDTO.getImage() != null ? productDTO.getImage() : defaultImage);
         product.setCategory(category);
         product.setSpecialPrice(calculateSpecialPrice(product.getPrice(), product.getDiscount()));
 
@@ -136,19 +127,28 @@ public class ProductService {
     @Transactional
     public ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException {
         Product product = fetchProductById(productId);
-        validateImageFile(image);
 
-        String fileName;
-        try {
-            fileName = fileService.uploadImage(imagePath, image);
-        } catch (IOException e) {
-            throw new IOException("Error uploading image", e);
-        }
+        // Upload image to Cloudinary
+        String imageUrl = cloudinaryService.uploadImage(image, imagePath);
 
-        product.setImage(fileName);
+        // Update product with the new image URL
+        product.setImage(imageUrl);
         Product updatedProduct = productRepository.save(product);
         return dtoMapper.mapToProductDTO(updatedProduct);
     }
+
+    public String getProductImageUrl(Long productId) {
+        Product product = fetchProductById(productId);
+
+        // Return default image if no image is associated
+        if (product.getImage() == null || product.getImage().isEmpty()) {
+            return defaultImage;
+        }
+
+        return product.getImage(); // Return the saved image URL
+    }
+
+
 
     @Transactional
     public ProductDTO deleteProductById(Long productId) {
@@ -228,13 +228,6 @@ public class ProductService {
         return PageRequest.of(pageNumber, pageSize, sortByAndOrder);
     }
 
-    private void validateImageFile(MultipartFile image) {
-        if (image == null || image.isEmpty() || !image.getContentType().startsWith("image/")) {
-            throw new APIException("Invalid image file");
-        }
-    }
-
-
     private void updateCartsWithProduct(Long productId) {
         List<Cart> carts = cartRepository.findCartByProductId(productId);
 
@@ -254,6 +247,17 @@ public class ProductService {
     }
 
     private String constructImageUrl(String imageName) {
+        // Jeśli imageName jest null lub pusty, zwróć URL do domyślnego obrazu
+        if (imageName == null || imageName.isEmpty()) {
+            return imageBaseUrl.endsWith("/") ? imageBaseUrl + "default-image.jpg" : imageBaseUrl + "/default-image.jpg";
+        }
+
+        // Jeśli imageName jest już pełnym URL-em, zwróć go bez zmian
+        if (imageName.startsWith("http://") || imageName.startsWith("https://")) {
+            return imageName;
+        }
+
+        // W przeciwnym razie dodaj base URL do imageName
         return imageBaseUrl.endsWith("/") ? imageBaseUrl + imageName : imageBaseUrl + "/" + imageName;
     }
 

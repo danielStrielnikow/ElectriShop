@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.ecommerce.project.config.AppConstants;
 import pl.ecommerce.project.payload.ProductResponse;
 import pl.ecommerce.project.payload.dto.ProductDTO;
+import pl.ecommerce.project.service.CloudinaryService;
 import pl.ecommerce.project.service.ProductService;
 
 import java.io.IOException;
@@ -16,9 +17,11 @@ import java.io.IOException;
 @RequestMapping("/api")
 public class ProductController {
     private final ProductService productService;
+    private final CloudinaryService cloudinaryService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, CloudinaryService cloudinaryService) {
         this.productService = productService;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @GetMapping("/public/products")
@@ -69,9 +72,9 @@ public class ProductController {
     }
 
 
-    @PostMapping("/admin/categories/{categoryId}/product")
+    @PostMapping(value = "/admin/categories/{categoryId}/product", consumes = "multipart/form-data")
     public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO,
-                                                 @PathVariable Long categoryId) throws IOException {
+                                                 @PathVariable Long categoryId) {
         ProductDTO savedProductDTO = productService.addProduct(categoryId, productDTO);
         return new ResponseEntity<>(savedProductDTO, HttpStatus.CREATED);
     }
@@ -83,11 +86,31 @@ public class ProductController {
         return new ResponseEntity<>(updateProductDTO, HttpStatus.OK);
     }
 
+
     @PutMapping("/products/{productId}/image")
     public ResponseEntity<ProductDTO> updateProductImage(@PathVariable Long productId,
                                                          @RequestParam("image") MultipartFile image) throws IOException {
         ProductDTO updatedProduct = productService.updateProductImage(productId, image);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+    }
+
+    @GetMapping("/public/{productId}/imageUrl")
+    public ResponseEntity<String> getProductImageUrl(@PathVariable Long productId) {
+        String imageUrl = productService.getProductImageUrl(productId);
+        return new ResponseEntity<>(imageUrl, HttpStatus.OK);
+    }
+
+    @PostMapping("/{productId}/image")
+    public ResponseEntity<String> uploadProductImage(
+            @PathVariable Long productId,
+            @RequestParam("image") MultipartFile image) {
+        try {
+            String imageUrl = cloudinaryService.uploadImage(image, "products");
+            return ResponseEntity.ok(imageUrl);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error uploading image: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/admin/products/{productId}")

@@ -33,9 +33,6 @@ spring:
 #    pl:
 #      ecommerce:
 #        project: DEBUG
-project:
-  image: images/
-  default: default_image.png
 
 frontend:
   url: ${FRONT_URL}
@@ -45,6 +42,8 @@ cloudinary:
   api-key: ${API_KEY_CLOUDINARY}
   api-secret: ${API_SECRET_CLOUDINARY}
   url: cloudinary://${API_KEY_CLOUDINARY}:${API_SECRET_CLOUDINARY}@${CLOUD_NAME_CLOUDINARY}
+  default_image: ${DEFAULT_IMAGE_URL}
+  path: products
 
 #Stripe key
 stripe:
