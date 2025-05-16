@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react'
-import Skeleton from '../shared/Skieleton';
+import Skeleton from '../shared/Skeleton';
 import { FaAddressBook } from 'react-icons/fa';
 import AddressInfoModal from './AddressInfoModal';
 import AddAddressForm from './AddAddressForm';

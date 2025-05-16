@@ -1,5 +1,4 @@
 import api from "../../api/api"
-import {CURRENCY_LOWERCASE} from "../../constants";
 
 export const fetchProducts = (queryString) => async (dispatch) => {
     try {
@@ -161,13 +160,13 @@ export const logOutUser = (navigate) => (dispatch) => {
 };
 
 export const addUpdateUserAddress =
-     (sendData, toast, addressId, setOpenAddressModal) => async (dispatch, getState) => {  
-          
+     (sendData, toast, addressId, setOpenAddressModal) => async (dispatch, getState) => {
+    /*
     const { user } = getState().auth;
     await api.post(`/addresses`, sendData, {
           headers: { Authorization: "Bearer " + user.jwtToken },
         });
-
+    */
     dispatch({ type:"BUTTON_LOADER" });
     try {
         if (!addressId) {
@@ -291,7 +290,7 @@ export const createStripePaymentSecret
             dispatch({ type: "IS_FETCHING" });
             const { data } = await api.post("/order/stripe-client-secret", {
                 "amount": Number(totalPrice) * 100,
-                "currency": {currency: CURRENCY_LOWERCASE}
+                "currency": "usd"
               });
             dispatch({ type: "CLIENT_SECRET", payload: data });
               localStorage.setItem("client-secret", JSON.stringify(data));
