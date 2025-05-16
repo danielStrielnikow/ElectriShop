@@ -1,11 +1,10 @@
-
 import { Button, Step, StepLabel, Stepper } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import AddressInfo from './AddressInfo';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserAddresses } from '../../store/actions';
 import toast from 'react-hot-toast';
-import Skeleton from '../shared/Skieleton';
+import Skeleton from '../shared/Skeleton';
 import ErrorPage from '../shared/ErrorPage';
 import PaymentMethod from './PaymentMethod';
 import OrderSummary from './OrderSummary';
