@@ -6,6 +6,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class JwtUtils {
                 .path("/api")
                 .maxAge(24 * 60 * 60)
                 .httpOnly(true)
-                .secure(false)
+                .secure(false) // Ustaw na true, jeśli korzystasz z HTTPS
                 .build();
         return cookie;
     }
@@ -62,12 +63,14 @@ public class JwtUtils {
     }
 
     public String generateTokenFromUsername(String username) {
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key())
                 .compact();
+        logger.info("Generated JWT Token: {}", token);
+        return token;
     }
 
     public String getUserNameFromJwtToken(String token) {
@@ -92,7 +95,11 @@ public class JwtUtils {
         } catch (UnsupportedJwtException e) {
             logger.error("JWT token is unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
+            if (authToken == null || authToken.isEmpty()) {
+                logger.error("JWT token is empty or null.");
+            } else {
+                logger.error("JWT claims string is empty or null: {}", e.getMessage());
+            }
         }
         return false;
     }

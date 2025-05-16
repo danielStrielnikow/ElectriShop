@@ -29,11 +29,12 @@ public class AddressService {
     @Transactional
     public AddressDTO createAddress(AddressDTO addressDTO, User user) {
         Address address = dtoMapper.mapAddressToEntity(addressDTO);
+        address.setUser(user);
+
         List<Address> addressList = user.getAddresses();
         addressList.add(address);
 
         user.setAddresses(addressList);
-        address.setUser(user);
         Address savedAddress = addressRepository.save(address);
 
         return dtoMapper.mapToAddressDTO(savedAddress);
@@ -76,10 +77,7 @@ public class AddressService {
         updateAddressFromDTO(addressDTO, address);
         Address updatedAddress = addressRepository.save(address);
 
-        User user = address.getUser();
-        user.getAddresses().removeIf(a -> a.getAddressId().equals(addressId));
-        user.getAddresses().add(updatedAddress);
-        userRepository.save(user);
+
         return dtoMapper.mapToAddressDTO(updatedAddress);
     }
 
@@ -89,10 +87,9 @@ public class AddressService {
 
         User user = address.getUser();
         user.getAddresses().removeIf(a -> a.getAddressId().equals(addressId));
-        userRepository.save(user);
 
         addressRepository.delete(address);
-        return "address deleted successfully with addressId" + addressId;
+        return "Address deleted successfully with addressId " + addressId;
     }
 
 

@@ -77,7 +77,7 @@ public class WebSecurityConfig {
                         auth.requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/**").permitAll()
-                                .requestMatchers("/h2-console/**").permitAll()
+//                                .requestMatchers("/h2-console/**").permitAll()
                                 //.requestMatchers("/api/admin/**").permitAll()
                                 .requestMatchers("/api/public/**").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll()
@@ -103,28 +103,5 @@ public class WebSecurityConfig {
                 "/configuration/security",
                 "/swagger-ui.html",
                 "/webjars/**"));
-    }
-    @Bean
-    public CommandLineRunner initData() {
-        return args -> {
-
-            Role adminRole = roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
-                    .orElseGet(() -> {
-                        Role newAdminRole = new Role(AppRole.ROLE_ADMIN);
-                        return roleRepository.save(newAdminRole);
-                    });
-            Set<Role> adminRoles = Set.of(adminRole);
-
-
-            if (!userRepository.existsByUserName("admin")) {
-                User admin = new User("admin", "admin@example.com", passwordEncoder().encode("adminPass"));
-                userRepository.save(admin);
-            }
-
-            userRepository.findByUserName("admin").ifPresent(admin -> {
-                admin.setRoles(adminRoles);
-                userRepository.save(admin);
-            });
-        };
     }
 }
