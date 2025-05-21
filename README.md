@@ -51,8 +51,8 @@ ElectriShop to pełnoprawna aplikacja e-commerce do sprzedaży elektroniki. Umo�
 
 ## 🚀 Demo aplikacji
 
-💻 [Frontend – wersja demo](https://twoj-link-do-frontendu.com)  
-🔧 [Backend – Swagger UI](https://twoj-link-do-backendu.com/swagger-ui/index.html)
+💻 [Frontend – wersja demo](https://verdant-tapioca-b788b1.netlify.app/)  
+🔧 [Backend – Swagger UI](https://elektri-shop-latest.onrender.com)
 
 ---
 
