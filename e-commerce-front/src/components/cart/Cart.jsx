@@ -2,7 +2,7 @@ import { MdArrowBack, MdShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import ItemContent from "./ItemContent";
-import CartEmpty from "./CartEmpty";
+import CartEmpty from "./CartEmty";
 import { formatPrice } from "../../utils/formatPrice";
 
 const Cart = () => {

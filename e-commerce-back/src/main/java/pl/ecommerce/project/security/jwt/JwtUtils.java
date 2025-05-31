@@ -66,7 +66,6 @@ public class JwtUtils {
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key())
                 .compact();
-        logger.info("Generated JWT Token: {}", token);
         return token;
     }
 
