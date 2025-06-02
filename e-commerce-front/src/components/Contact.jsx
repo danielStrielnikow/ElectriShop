@@ -12,7 +12,7 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/api/public/contact", {
+      const response = await fetch(`${import.meta.env.VITE_BACK_END_URL}/api/public/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
