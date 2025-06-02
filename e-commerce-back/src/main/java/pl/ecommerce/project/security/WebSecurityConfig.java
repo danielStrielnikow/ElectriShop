@@ -14,8 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.ecommerce.project.repo.RoleRepository;
-import pl.ecommerce.project.repo.UserRepository;
 import pl.ecommerce.project.security.jwt.AuthEntryPointJwt;
 import pl.ecommerce.project.security.jwt.AuthTokenFilter;
 import pl.ecommerce.project.security.services.UserDetailsServiceImpl;
@@ -28,12 +26,6 @@ public class WebSecurityConfig {
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -66,12 +58,12 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
-                                .requestMatchers("/**").permitAll()
 //                                .requestMatchers("/h2-console/**").permitAll()
-                                //.requestMatchers("/api/admin/**").permitAll()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/public/contact").permitAll()
                                 .requestMatchers("/api/public/**").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll()
-                                .requestMatchers("/api/test/**").permitAll()
+                                .requestMatchers("/api/test/**").hasRole("ADMIN")
                                 .requestMatchers("/images/**").permitAll()
                                 .anyRequest().authenticated()
                 );
