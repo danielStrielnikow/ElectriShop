@@ -2,6 +2,7 @@ package pl.ecommerce.project.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,7 +73,7 @@ public class ProductController {
     }
 
 
-    @PostMapping(value = "/admin/categories/{categoryId}/product", consumes = "multipart/form-data")
+    @PostMapping(value = "/admin/categories/{categoryId}/product",  consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO,
                                                  @PathVariable Long categoryId) {
         ProductDTO savedProductDTO = productService.addProduct(categoryId, productDTO);

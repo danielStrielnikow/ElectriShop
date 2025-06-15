@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NoArgsConstructor
 @Data
 public class UserDetailsImpl implements UserDetails {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Long id;

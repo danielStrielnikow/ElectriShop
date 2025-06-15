@@ -8,7 +8,7 @@ target/
 #.DS_Store
 .DS_Store
 .env
-
+src/main/resources/application-dev-test.yml
 ### STS ###
 .apt_generated
 .classpath
